@@ -25,6 +25,7 @@ import Ratings from "./menus/Ratings";
 import ResetButton from "./resetButton";
 import FilterCalender from "./FilterCalender";
 import FilterAccordion from "@components/filtersBox/FilterAccordion";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const FilterGrid = () => {
   // Side filters data
@@ -207,7 +208,6 @@ const FilterGrid = () => {
     academicStage,
   ]);
 
-
   const searchParams = useSearchParams();
 
   const handleSubmit = () => {
@@ -309,6 +309,7 @@ const FilterGrid = () => {
 
             <button
               onClick={handleSubmit}
+              {...getGtmTag(GTM_TAGS.DISCOVER.FILTERS_APPLY, "discover")}
               className="flex-1 py-3 font-bold text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor hover:bg-linksHover hover:border-linksHover"
             >
               {t("links.search")}

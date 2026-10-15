@@ -31,6 +31,7 @@ import FormSubmitButton from "@components/ui/FormSubmitButton";
 
 import { useSnackbar } from "notistack";
 import useAxiosForm from "@hooks/forms/useAxiosForm";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const PhoneMethodForm = ({ redirect = true }) => {
   const { makeRequest, isDisabled, setIsDisabled } = useAxiosForm();
@@ -180,6 +181,7 @@ const PhoneMethodForm = ({ redirect = true }) => {
               <Link
                 onClick={() => dispatch(setResetPasswordBy("phone"))}
                 href={`/${locale}/forget-password`}
+                {...getGtmTag(GTM_TAGS.AUTH.FORGOT_PASSWORD, "auth")}
                 className="text-sm transition-all duration-200 ease-in-out border-b text-titleColor font-ibm border-titleColor hover:border-linksHover hover:text-linksHover"
               >
                 {t("forms.auth.forgetPassword.name")}
@@ -187,6 +189,7 @@ const PhoneMethodForm = ({ redirect = true }) => {
             </div>
 
             <FormSubmitButton
+              {...getGtmTag(GTM_TAGS.AUTH.LOGIN_PHONE_SUBMIT, "auth")}
               loading={isSubmitting}
               disabled={!isValid || isDisabled}
               label={t("forms.auth.login.name")}

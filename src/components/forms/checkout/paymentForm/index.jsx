@@ -50,6 +50,7 @@ import applePay from "@assets/paymentLogos/apple-pay.svg";
 import tamaraEnglish from "@assets/paymentLogos/tamaraEnglish.svg";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import AppleWidgetTest from "./AppleWidgetTest";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const PaymentForm = () => {
   const [formErrors, setFormErrors] = useState([]);
@@ -613,6 +614,7 @@ const PaymentForm = () => {
                 <button
                   type="submit"
                   disabled={!isValid || isSubmitting || disabledButton}
+                  {...getGtmTag(GTM_TAGS.PAYMENT.PROCEED, "payment")}
                   className={`centered gap-5 w-full lg:w-[540px] mt-8 lg:mt-12 lg:py-4 py-3 px-4 text-base font-medium font-somar text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor bg-mainColor disabled:opacity-50 disabled:cursor-not-allowed ${
                     isValid && "hover:bg-linksHover hover:border-linksHover"
                   }`}

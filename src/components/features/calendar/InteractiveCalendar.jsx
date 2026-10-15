@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { usePermissions } from "@hooks/utils/usePermissions";
 import formatDate from "@utils/formatters/FormateDate";
 import { PERMISSIONS } from "@constants/permissions";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const InteractiveCalendar = ({
   currentMonth,
@@ -80,6 +81,7 @@ const InteractiveCalendar = ({
       <div className="flex items-center justify-between mb-4 md:mb-6 gap-2">
         <button
           onClick={() => onMonthChange("prev")}
+          {...getGtmTag(GTM_TAGS.CALENDAR.PREV_MONTH, "calendar")}
           className="p-2 md:p-3 hover:bg-gray-100 rounded-lg md:rounded-xl transition-all duration-200 hover:shadow-md text-gray-600 hover:text-gray-800 font-bold text-lg md:text-xl flex-shrink-0"
           aria-label="Previous month"
         >
@@ -93,6 +95,7 @@ const InteractiveCalendar = ({
         </h4>
         <button
           onClick={() => onMonthChange("next")}
+          {...getGtmTag(GTM_TAGS.CALENDAR.NEXT_MONTH, "calendar")}
           className="p-2 md:p-3 hover:bg-gray-100 rounded-lg md:rounded-xl transition-all duration-200 hover:shadow-md text-gray-600 hover:text-gray-800 font-bold text-lg md:text-xl flex-shrink-0"
           aria-label="Next month"
         >
@@ -134,12 +137,12 @@ const InteractiveCalendar = ({
                 day === null
                   ? "text-gray-300"
                   : isPastDate
-                  ? "text-gray-400 bg-gray-50 cursor-not-allowed opacity-50 rounded-md sm:rounded-lg"
-                  : isSameDay(day, selectedDate)
-                  ? "bg-black text-white rounded-lg sm:rounded-xl shadow-lg transform scale-105 cursor-pointer"
-                  : isToday(day)
-                  ? "bg-mainColor/80 text-white rounded-lg sm:rounded-xl border-2 border-mainColor/80 cursor-pointer hover:bg-mainColor hover:border-mainColor"
-                  : "hover:bg-gray-100 hover:shadow-md rounded-lg sm:rounded-xl cursor-pointer"
+                    ? "text-gray-400 bg-gray-50 cursor-not-allowed opacity-50 rounded-md sm:rounded-lg"
+                    : isSameDay(day, selectedDate)
+                      ? "bg-black text-white rounded-lg sm:rounded-xl shadow-lg transform scale-105 cursor-pointer"
+                      : isToday(day)
+                        ? "bg-mainColor/80 text-white rounded-lg sm:rounded-xl border-2 border-mainColor/80 cursor-pointer hover:bg-mainColor hover:border-mainColor"
+                        : "hover:bg-gray-100 hover:shadow-md rounded-lg sm:rounded-xl cursor-pointer"
               }`}
               onClick={() => !isDisabled && day && setSelectedDateSafe(day)}
             >

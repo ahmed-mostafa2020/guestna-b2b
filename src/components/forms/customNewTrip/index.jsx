@@ -32,6 +32,8 @@ import StepTripInfo from "./steps/StepTripInfo";
 import StepTripDate from "./steps/StepTripDate";
 import StepPricing from "./steps/StepPricing";
 import StepAdditionalInfo from "./steps/StepAdditionalInfo";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
+import { ANALYTICS_EVENTS, trackEvent } from "@utils/tracking/analytics";
 
 // ============================================================================
 // Deep Validation Helper Functions
@@ -1097,6 +1099,12 @@ const CustomNewTripForm = ({
         enqueueSnackbar(isEditMode ? t("edit_success") : t("success"), {
           variant: "success",
         });
+        // Only a new custom trip request is a lead; edits are not
+        if (!isEditMode) {
+          trackEvent(ANALYTICS_EVENTS.GENERATE_LEAD, {
+            lead_source: "custom_trip",
+          });
+        }
 
         if (!isEditMode) {
           resetForm();
@@ -1522,6 +1530,12 @@ const CustomNewTripForm = ({
                     <button
                       type="button"
                       onClick={() => handleNext(formik)}
+                      {...getGtmTag(
+                        activeStep === steps.length - 1
+                          ? GTM_TAGS.CUSTOM_TRIP.SUBMIT
+                          : GTM_TAGS.CUSTOM_TRIP.NEXT_STEP,
+                        "custom_trip"
+                      )}
                       disabled={isNextDisabled}
                       className="px-4 sm:px-6 py-2 sm:py-2.5 bg-mainColor text-white rounded-lg hover:bg-titleColor disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
                     >

@@ -28,6 +28,8 @@ import { useSnackbar } from "notistack";
 import axios from "axios";
 
 import hello from "@assets/gif/hello.gif";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
+import { ANALYTICS_EVENTS, trackEvent } from "@utils/tracking/analytics";
 
 const ParentLoginForm = () => {
   const [formErrors, setFormErrors] = useState([]);
@@ -70,6 +72,11 @@ const ParentLoginForm = () => {
           setToken(response.data.token);
           dispatch(setUserToken(response.data.token));
           dispatch(setUser(response.data.userType));
+
+          trackEvent(ANALYTICS_EVENTS.LOGIN, {
+            method: "parent",
+            user_type: response.data.userType,
+          });
 
           dispatch(submitParentData(response.data.user));
         }
@@ -158,6 +165,7 @@ const ParentLoginForm = () => {
               />
 
               <FormSubmitButton
+                {...getGtmTag(GTM_TAGS.AUTH.PARENT_LOGIN_SUBMIT, "auth")}
                 loading={isSubmitting}
                 disabled={!isValid}
                 label={t("forms.auth.login.name")}

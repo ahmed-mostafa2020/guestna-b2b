@@ -18,6 +18,7 @@ import { PERMISSIONS } from "@constants/permissions";
 import TripsGrid from "@components/features/discover/gridSection/tripsGrid";
 import { usePaginatedTrips } from "@hooks/data/usePaginatedTrips";
 import TripTemplateSection from "@components/ui/tripTemplateSection";
+import { REGISTER_SOURCES } from "@utils/tracking/analytics";
 
 const ActivitiesMarketPage = () => {
   const { currentPage, filter, searchTerm } = useSelector(
@@ -121,7 +122,10 @@ const ActivitiesMarketPage = () => {
     >
       {data?.tripTimplate && (
         <div className="mb-4 lg:mb-8 rounded-xl overflow-hidden">
-          <TripTemplateSection tripTemplate={data.tripTimplate} />
+          <TripTemplateSection
+            tripTemplate={data.tripTimplate}
+            source={REGISTER_SOURCES.ACTIVITIES_MARKET}
+          />
         </div>
       )}
 

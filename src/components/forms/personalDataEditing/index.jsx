@@ -33,6 +33,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const PersonalDataEditing = ({ handleClose }) => {
   const [_, setFormErrors] = useState([]);
@@ -338,6 +339,7 @@ const PersonalDataEditing = ({ handleClose }) => {
             <div className="flex items-center justify-end gap-2 mt-4">
               <button
                 onClick={handleClose}
+                {...getGtmTag(GTM_TAGS.PROFILE.EDIT_INFO_CANCEL, "profile")}
                 type="button"
                 className="px-8 py-3 text-black transition-all duration-200 ease-in-out hover:text-mainColor"
               >
@@ -345,6 +347,7 @@ const PersonalDataEditing = ({ handleClose }) => {
               </button>
 
               <FormSubmitButton
+                {...getGtmTag(GTM_TAGS.PROFILE.EDIT_INFO, "profile")}
                 loading={isSubmitting}
                 disabled={!isValid || disabledButton}
                 label={t("links.saveChange")}

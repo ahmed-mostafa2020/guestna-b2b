@@ -13,6 +13,7 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const ResendOtpButton = () => {
   const { email, phone, loggedEmail, loggedPhone, sendingOtpOption } =
@@ -72,6 +73,7 @@ const ResendOtpButton = () => {
       type="button"
       disabled={disabledButton || isLoading}
       onClick={handleResetOtp}
+      {...getGtmTag(GTM_TAGS.AUTH.RESEND_OTP, "auth")}
       className="h-6 mx-auto text-sm text-black w-fit"
     >
       {isLoading ? (

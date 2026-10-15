@@ -15,6 +15,7 @@ import masterCardLogo from "@assets/paymentLogos/master-card.svg";
 import applePayLogo from "@assets/paymentLogos/apple-pay.svg";
 import amExpressLogo from "@assets/paymentLogos/amExpress.svg";
 import tamaraLogo from "@assets/paymentLogos/tamaraEnglish.webp";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const Footer = () => {
   const locale = useLocale();
@@ -26,6 +27,7 @@ const Footer = () => {
       links: [
         {
           name: t("footer.aboutUs"),
+          gtmTag: GTM_TAGS.FOOTER.ABOUT_US,
           url: "https://about.guestna-edu.com",
         },
         // {
@@ -47,6 +49,7 @@ const Footer = () => {
       links: [
         {
           name: t("footer.callUs"),
+          gtmTag: GTM_TAGS.FOOTER.CALL_US,
           url: `/${locale}/contact-us`,
         },
         // {
@@ -64,6 +67,7 @@ const Footer = () => {
       links: [
         {
           name: t("footer.terms"),
+          gtmTag: GTM_TAGS.FOOTER.TERMS,
           url: `/${locale}/terms-and-conditions`,
         },
         // {
@@ -100,6 +104,7 @@ const Footer = () => {
         href={companyLink.url}
         key={index}
         target="_blank"
+        {...getGtmTag(companyLink.gtmTag, "footer")}
         className="font-normal leading-7 capitalize transition-all duration-200 ease-in-out border-b border-transparent w-fit text-footerLink hover:border-footerLink"
       >
         {companyLink.name}
@@ -112,6 +117,7 @@ const Footer = () => {
       <Link
         href={supportLink.url}
         key={index}
+        {...getGtmTag(supportLink.gtmTag, "footer")}
         className="font-normal leading-7 capitalize transition-all duration-200 ease-in-out border-b border-transparent w-fit text-footerLink hover:border-footerLink"
       >
         {supportLink.name}
@@ -123,6 +129,7 @@ const Footer = () => {
     <Link
       href={legalLink.url}
       key={index}
+      {...getGtmTag(legalLink.gtmTag, "footer")}
       className="font-normal leading-7 capitalize transition-all duration-200 ease-in-out border-b border-transparent w-fit text-footerLink hover:border-footerLink"
     >
       {legalLink.name}

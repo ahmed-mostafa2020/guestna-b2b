@@ -9,6 +9,7 @@ import getProxyUrl from "@utils/api/getProxyUrl";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import axios from "axios";
 import TextInputGroup from "@components/forms/TextInputGroup";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const AdministrativeCommentModal = ({ booking, onClose }) => {
   const locale = useLocale();
@@ -93,6 +94,10 @@ const AdministrativeCommentModal = ({ booking, onClose }) => {
       <div className="flex gap-4 pt-4">
         <button
           onClick={onClose}
+          {...getGtmTag(
+            GTM_TAGS.BOOKINGS.ADMINISTRATIVE_COMMENT_CANCEL,
+            "bookings"
+          )}
           disabled={loading}
           className="flex-1 font-ibm text-center px-6 py-2.5 border border-gray-300 rounded-lg text-black font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -100,6 +105,10 @@ const AdministrativeCommentModal = ({ booking, onClose }) => {
         </button>
         <button
           onClick={handleSubmit}
+          {...getGtmTag(
+            GTM_TAGS.BOOKINGS.ADMINISTRATIVE_COMMENT_SUBMIT,
+            "bookings"
+          )}
           disabled={loading}
           className="flex-1 font-ibm text-center px-6 py-2.5 bg-mainColor text-white rounded-lg font-medium hover:bg-linksHover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >

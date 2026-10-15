@@ -5,6 +5,11 @@ import { useTranslations, useLocale } from "next-intl";
 
 import { useSchoolRegisterAccess } from "@hooks/schoolRegister/useSchoolRegisterAccess";
 import { cn } from "@utils/helpers/cn";
+import {
+  ANALYTICS_EVENTS,
+  REGISTER_SOURCES,
+  trackEvent,
+} from "@utils/tracking/analytics";
 
 // compact: used inside the mobile sticky bar (no divider, no description)
 const MarketTemplateRegisterCta = ({ tripId, compact = false }) => {
@@ -32,6 +37,12 @@ const MarketTemplateRegisterCta = ({ tripId, compact = false }) => {
           "w-full px-8 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-secColor bg-secColor hover:bg-mainColor hover:border-mainColor focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secColor focus-visible:ring-offset-2",
           compact ? "py-2.5 text-sm" : "py-3"
         )}
+        onClick={() =>
+          trackEvent(ANALYTICS_EVENTS.SCHOOL_REGISTER_CTA_CLICK, {
+            source: REGISTER_SOURCES.TRIP_DETAILS,
+            trip_id: tripId,
+          })
+        }
       >
         {t("tripDetails.marketTemplate.cta")}
       </Link>

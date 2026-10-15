@@ -15,6 +15,8 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 
 import FormSubmitButton from "@components/ui/FormSubmitButton";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
+import { ANALYTICS_EVENTS, trackEvent } from "@utils/tracking/analytics";
 
 const ContactUsForm = () => {
   const [formErrors, setFormErrors] = useState([]);
@@ -54,6 +56,9 @@ const ContactUsForm = () => {
         // Change acc to response
         const { message } = response.data;
         if (message) {
+          trackEvent(ANALYTICS_EVENTS.GENERATE_LEAD, {
+            lead_source: "contact_us",
+          });
           enqueueSnackbar(t("forms.validation.success"), {
             variant: "success",
           });
@@ -62,8 +67,6 @@ const ContactUsForm = () => {
 
       .catch((error) => {
         setSubmitting(false);
-
-
 
         const errorMessage = getErrorMessage(error, t);
 
@@ -155,6 +158,7 @@ const ContactUsForm = () => {
 
               <div className="w-full pt-2 centered">
                 <FormSubmitButton
+                  {...getGtmTag(GTM_TAGS.CONTACT.SUBMIT, "forms")}
                   loading={isSubmitting}
                   disabled={!isValid}
                   label={t("links.send")}

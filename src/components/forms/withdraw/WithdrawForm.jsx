@@ -17,6 +17,7 @@ import { createWithdrawValidationSchema } from "@utils/validators/validationSche
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
   const locale = useLocale();
@@ -238,8 +239,8 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
             apiMessages.length > 0
               ? apiMessages.join(" - ")
               : !isGenericMessage && result.message
-              ? result.message
-              : t("error.submission");
+                ? result.message
+                : t("error.submission");
 
           enqueueSnackbar(displayMessage, { variant: "error" });
           return;
@@ -254,8 +255,8 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
           !isGenericValidationError && result.message
             ? result.message
             : !isGenericValidationError && result.error
-            ? result.error
-            : t("error.validation");
+              ? result.error
+              : t("error.validation");
 
         enqueueSnackbar(apiErrorMessage, { variant: "error" });
         return; // Don't throw, just show the error and return
@@ -379,6 +380,7 @@ const WithdrawForm = ({ balance, balanceLoading, refetchBalance }) => {
           <div className="mt-4">
             <button
               type="submit"
+              {...getGtmTag(GTM_TAGS.WALLET.WITHDRAW_SUBMIT, "wallet")}
               disabled={
                 isSubmitting ||
                 balanceLoading ||

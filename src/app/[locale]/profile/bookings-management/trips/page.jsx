@@ -9,6 +9,7 @@ import ProtectedProfilePage from "@components/ui/ProtectedProfilePage";
 import ProfilePageTemplate from "@components/features/profile/ProfilePageTemplate";
 import TripsManagementTable from "@components/features/profile/trips/TripsManagementTable";
 import EmptyBookings from "@components/features/profile/myBookings/EmptyBookings";
+import DataTableSkeleton from "@components/ui/DataTable/DataTableSkeleton";
 import ManagementFilters from "@components/forms/management/ManagementFilters";
 
 const TripsPage = () => {
@@ -55,6 +56,40 @@ const TripsPage = () => {
           endpoint={`${B2B_END_POINTS.PROFILE.ALL_TRIPS.MANAGEMENT}`}
           method="POST"
           bodyParameters={requestBody}
+          skeletonComponent={
+            <DataTableSkeleton
+              title={t("profile.tables.management.title")}
+              columns={[
+                {
+                  label: t("profile.tables.management.header.organization"),
+                  width: 140,
+                },
+                {
+                  label: t("profile.tables.management.header.targetStudents"),
+                  width: 130,
+                  lines: 2,
+                },
+                {
+                  label: t("profile.tables.management.header.tripName"),
+                  width: 150,
+                  lines: 2,
+                },
+                {
+                  label: t("profile.tables.management.header.tripType"),
+                  width: 80,
+                },
+                {
+                  label: t("profile.tables.management.header.tripDate"),
+                  width: 150,
+                },
+              ]}
+              actionsLabel={t("profile.tables.management.header.actions")}
+              actionsPermissions={[
+                PERMISSIONS.ELEMENT.B2B_PROFILE_TRIPS_MANAGEMENT_BUTTON,
+              ]}
+              actionWidth={100}
+            />
+          }
           emptyStateComponent={<EmptyBookings />}
           contentComponent={(
             data,

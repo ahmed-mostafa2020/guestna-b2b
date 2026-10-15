@@ -17,6 +17,7 @@ import getProxyUrl from "@utils/api/getProxyUrl";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getErrorMessage from "@utils/helpers/getErrorMessage";
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
+import { ANALYTICS_EVENTS, trackEvent } from "@utils/tracking/analytics";
 import { clearProviderRegisterSelections } from "@store/providerRegister/providerRegisterSelectionsSlice";
 
 import { validateCurrentStep } from "./stepHelpers";
@@ -160,6 +161,7 @@ const ProviderRegisterForm = () => {
         });
 
         if (response.status === 200 || response.status === 201) {
+          trackEvent(ANALYTICS_EVENTS.SIGN_UP, { method: "provider_register" });
           enqueueSnackbar(t("form.success"), { variant: "success" });
           setIsSuccess(true);
         }
@@ -235,7 +237,12 @@ const ProviderRegisterForm = () => {
                   currentStep={activeStep}
                   maxVisitedStep={maxVisitedStep}
                   onStepClick={(targetStep) =>
-                    handleStepClick(targetStep, validateForm, setTouched, touched)
+                    handleStepClick(
+                      targetStep,
+                      validateForm,
+                      setTouched,
+                      touched
+                    )
                   }
                 />
               </div>
@@ -282,7 +289,9 @@ const ProviderRegisterForm = () => {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => handleNext(validateForm, setTouched, touched)}
+                    onClick={() =>
+                      handleNext(validateForm, setTouched, touched)
+                    }
                     className="sm:flex-1 w-full centered font-semibold text-center border-2 border-mainColor py-3 bg-mainColor text-white rounded-lg hover:bg-linksHover hover:border-linksHover transition-all duration-200 ease-in-out"
                   >
                     {t("form.next")}

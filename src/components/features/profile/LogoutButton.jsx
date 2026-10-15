@@ -23,6 +23,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { clearTheme } from "@store/theme/themeSlice";
 import { clearSelectedOrganizations } from "@store/profile/selectedOrganizationsSlice";
 import { resetRootTheme } from "@components/providers/ThemeProvider";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 // Public school booking page: stays put on logout so it switches to the non-auth form
 const SCHOOL_BOOKING_PATH_REGEX = /\/school-register\/[^/]+\/?$/;
@@ -107,6 +108,7 @@ const LogoutButton = ({ onLogoutComplete, onModalOpen, onModalClose }) => {
     <>
       <button
         onClick={handleOpen}
+        {...getGtmTag(GTM_TAGS.AUTH.LOGOUT_BUTTON, "auth")}
         aria-label={t("profile.aside.logout")}
         className="px-4 py-2 text-base font-medium transition-all duration-200 ease-in-out hover:text-error"
       >

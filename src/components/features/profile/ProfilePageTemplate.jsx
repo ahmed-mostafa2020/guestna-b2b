@@ -6,6 +6,7 @@ import React, { memo, useCallback, useEffect, useState } from "react";
 
 import { useFetchData } from "@hooks/data/useFetchData";
 import ErrorComponent from "@feedback/error/ErrorComponent";
+import TableSkeleton from "@components/ui/TableSkeleton";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
 const ProfilePageTemplate = ({
@@ -87,14 +88,7 @@ const ProfilePageTemplate = ({
         ? skeletonComponent()
         : skeletonComponent;
     }
-    return (
-      <div className="w-full py-12 centered">
-        <div className="flex flex-col items-center gap-3">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-mainColor"></div>
-          <p className="text-sm text-gray-500">{t("common.loading")}</p>
-        </div>
-      </div>
-    );
+    return <TableSkeleton />;
   }
 
   if (error)

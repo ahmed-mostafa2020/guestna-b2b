@@ -14,6 +14,7 @@ import MobileStickyActionBar from "@components/ui/trips/MobileStickyActionBar";
 import CustomizedModal from "@components/ui/customizedModal";
 import RequestQuoteForm from "@components/forms/requestQuote";
 import MarketTemplateRegisterCta from "./MarketTemplateRegisterCta";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const RequestQuote = () => {
   const [isRequestQuoteFormOpen, setIsRequestQuoteFormOpen] = useState(false);
@@ -45,6 +46,10 @@ const RequestQuote = () => {
           {!onlyDetails && (
             <button
               onClick={handleRequestQuoteFormOpen}
+              {...getGtmTag(
+                GTM_TAGS.TRIP_DETAILS.REQUEST_QUOTE,
+                "trip_details"
+              )}
               className="flex-1 py-3 text-base font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor"
             >
               {t("links.requestQuote")}
@@ -54,6 +59,10 @@ const RequestQuote = () => {
           <Link
             target="_blank"
             href={CONSTANT_VALUES.WHATSAPP_CONTACT}
+            {...getGtmTag(
+              GTM_TAGS.TRIP_DETAILS.CONTACT_WHATSAPP,
+              "trip_details"
+            )}
             className="flex-1 py-3 text-base font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-secColor text-mainColor hover:text-white hover:bg-secColor "
           >
             {t("links.contactUs")}

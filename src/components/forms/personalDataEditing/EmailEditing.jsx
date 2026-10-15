@@ -20,6 +20,7 @@ import FormSubmitButton from "@components/ui/FormSubmitButton";
 import { useSnackbar } from "notistack";
 
 import axios from "axios";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const EmailEditing = ({ handleClose }) => {
   const [_, setFormErrors] = useState([]);
@@ -126,6 +127,7 @@ const EmailEditing = ({ handleClose }) => {
             <div className="flex items-center justify-end gap-2">
               <button
                 onClick={handleClose}
+                {...getGtmTag(GTM_TAGS.PROFILE.EDIT_EMAIL_CANCEL, "profile")}
                 type="button"
                 className="px-8 py-3 text-black transition-all duration-200 ease-in-out hover:text-mainColor"
               >
@@ -133,8 +135,11 @@ const EmailEditing = ({ handleClose }) => {
               </button>
 
               <FormSubmitButton
+                {...getGtmTag(GTM_TAGS.PROFILE.EDIT_EMAIL, "profile")}
                 loading={isSubmitting}
-                disabled={!isValid || disabledButton || values.email == oldEmail}
+                disabled={
+                  !isValid || disabledButton || values.email == oldEmail
+                }
                 label={t("links.saveChange")}
                 isValid={isValid}
                 className="py-3 px-8 text-base"

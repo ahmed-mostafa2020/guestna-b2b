@@ -37,6 +37,8 @@ import { Formik } from "formik";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
+import { ANALYTICS_EVENTS, trackEvent } from "@utils/tracking/analytics";
 
 const extractBranchId = (branch) => {
   if (!branch) return "";
@@ -764,6 +766,10 @@ const AuthenticatedRequestQuote = ({
 
         const res = response.data;
         if (res) {
+          trackEvent(ANALYTICS_EVENTS.GENERATE_LEAD, {
+            lead_source: "request_quote_authenticated",
+          });
+
           // Show thanks message
           setShowThanksMessage(true);
 
@@ -1443,6 +1449,7 @@ const AuthenticatedRequestQuote = ({
                   <div className="w-full pt-4 lg:pt-8 centered">
                     <button
                       type="submit"
+                      {...getGtmTag(GTM_TAGS.TRIPS.REQUEST_QUOTE, "trips")}
                       disabled={isSubmitting || !isValid}
                       className="centered w-full py-3 text-white bg-mainColor rounded-lg hover:bg-titleColor disabled:opacity-50"
                     >

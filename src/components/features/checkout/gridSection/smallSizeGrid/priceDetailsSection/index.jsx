@@ -2,9 +2,11 @@
 
 import { useTranslations } from "next-intl";
 
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import formatCurrency from "@utils/formatters/FormatCurrency";
+import { rememberCheckoutValue } from "@utils/tracking/analytics";
 import FrameWithImagedHeader from "@components/ui/frameWithImagedHeader/FrameWithImagedHeader";
 
 const PriceDetailsSection = ({ finalTripDetails }) => {
@@ -23,6 +25,11 @@ const PriceDetailsSection = ({ finalTripDetails }) => {
   const promoCodeDiscount = priceInfo?.promoCodeDiscount || 0;
 
   const total = priceInfo?.total || 0;
+
+  // Analytics only: the bookingStatus page sends this total with the purchase event
+  useEffect(() => {
+    rememberCheckoutValue(total);
+  }, [total]);
 
   const numberOfPeople = t("common.peopleCount", { count: quantity });
 

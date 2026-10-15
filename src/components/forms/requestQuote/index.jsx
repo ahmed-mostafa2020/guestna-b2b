@@ -30,6 +30,8 @@ import hello from "@assets/gif/hello.gif";
 import PhoneInputWithCountrySelect from "@components/forms/PhoneNumberInput";
 import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
+import { ANALYTICS_EVENTS, trackEvent } from "@utils/tracking/analytics";
 
 const RequestQuoteForm = () => {
   const [showThanksMessage, setShowThanksMessage] = useState(false);
@@ -75,6 +77,9 @@ const RequestQuoteForm = () => {
         resetForm();
 
         if (response.data) {
+          trackEvent(ANALYTICS_EVENTS.GENERATE_LEAD, {
+            lead_source: "request_quote",
+          });
           enqueueSnackbar(t("forms.validation.checkYourEmail"), {
             variant: "success",
           });
@@ -239,6 +244,7 @@ const RequestQuoteForm = () => {
                 />
 
                 <FormSubmitButton
+                  {...getGtmTag(GTM_TAGS.TRIPS.REQUEST_QUOTE, "trips")}
                   loading={isSubmitting}
                   disabled={!isValid}
                   label={t("links.sendRequest")}

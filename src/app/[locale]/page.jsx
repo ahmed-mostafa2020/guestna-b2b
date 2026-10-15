@@ -27,6 +27,7 @@ import SmallSeparator from "@components/ui/separators/SmallSeparator";
 import ResponsiveSeparator from "@components/ui/separators/ResponsiveSeparator";
 import FeatureTrips from "@components/features/home/featureTrips";
 import TripTemplateSection from "@components/ui/tripTemplateSection";
+import { REGISTER_SOURCES } from "@utils/tracking/analytics";
 
 export default function Home() {
   // useReportWebVitals((metric) => {
@@ -76,7 +77,10 @@ export default function Home() {
   return (
     <>
       <main className="overflow-hidden bg-activityDetailsBg">
-        <TripTemplateSection tripTemplate={tripTimplate} />
+        <TripTemplateSection
+          tripTemplate={tripTimplate}
+          source={REGISTER_SOURCES.HOME}
+        />
         <HeroSection />
 
         <Plans />

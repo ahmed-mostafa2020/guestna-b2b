@@ -11,6 +11,7 @@ import DataTable from "@components/ui/DataTable";
 import { actionsIcon } from "@assets/svg";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import OrdersTableFilter from "./OrdersTableFilter";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const getStatusInfo = (tripsCount, maximumNumberTrips, t) => {
   const remaining = maximumNumberTrips - tripsCount;
@@ -78,18 +79,6 @@ const OrdersSettingsTable = () => {
 
   const settingsData = data?.nodes || [];
 
-  // Error state display
-  if (error) {
-    return (
-      <ErrorComponent
-        statusCode={error?.response?.data?.statusCode}
-        errorMessage={error?.response?.data?.message}
-        notFoundPage={false}
-        padding={false}
-      />
-    );
-  }
-
   const columns = useMemo(
     () => [
       {
@@ -147,6 +136,18 @@ const OrdersSettingsTable = () => {
     [t]
   );
 
+  // Error state display — after all hooks so the hook order never changes between renders
+  if (error) {
+    return (
+      <ErrorComponent
+        statusCode={error?.response?.data?.statusCode}
+        errorMessage={error?.response?.data?.message}
+        notFoundPage={false}
+        padding={false}
+      />
+    );
+  }
+
   return (
     <div className="flex flex-col w-full bg-white rounded-2xl py-4 px-3 shadow-card">
       {/* Header */}
@@ -170,6 +171,7 @@ const OrdersSettingsTable = () => {
         rowActions={(row) => (
           <button
             onClick={() => handleEditClick(row)}
+            {...getGtmTag(GTM_TAGS.ORDERS.EDIT_SETTINGS, "orders", row._id)}
             className="p-2 text-mainColor hover:bg-mainColor/10 rounded-lg transition-colors flex items-center justify-center m-auto"
             title={t("links.edit")}
           >

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
 import { cn } from "@utils/helpers/cn";
+import { ANALYTICS_EVENTS, trackEvent } from "@utils/tracking/analytics";
 
 import {
   TopDecorativeBand,
@@ -201,6 +202,11 @@ const SchoolTripBookingSuccessCard = ({
           {/* Primary CTA Button: Redirects to profile/create-trip-link/[slug] */}
           <Link
             href={createTripLinkUrl}
+            onClick={() =>
+              trackEvent(ANALYTICS_EVENTS.CREATE_TRIP_LINK_CTA_CLICK, {
+                trip_id: tripSlug,
+              })
+            }
             id="primary-share-trip-cta-btn"
             className="group flex-[1.4] order-1 flex items-center justify-center gap-2.5 py-3.5 px-5 rounded-xl bg-mainColor hover:bg-linksHover text-white font-bold font-somar text-xs sm:text-sm md:text-[15px] shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 text-center"
           >

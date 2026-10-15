@@ -23,6 +23,7 @@ import AuthToggleButton from "./AuthToggleButton";
 
 import { Container } from "@mui/material";
 import OrganizationSelector from "@components/ui/OrganizationSelector";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const Header = () => {
   const userToken = useSelector((state) => state.users.userToken);
@@ -38,12 +39,14 @@ const Header = () => {
   const navLinks = [
     {
       name: t("header.home"),
+      gtmTag: GTM_TAGS.NAV.HOME,
       link: `/${locale}`,
       isDisabled: false,
       isBlank: false,
     },
     {
       name: t("header.aboutUs"),
+      gtmTag: GTM_TAGS.NAV.ABOUT,
       link: `${
         locale === "ar"
           ? "https://about.guestna-edu.com"
@@ -54,6 +57,7 @@ const Header = () => {
     },
     {
       name: t("header.contactUs"),
+      gtmTag: GTM_TAGS.NAV.CONTACT,
       link: `/${locale}/contact-us`,
       // link: "https://api.whatsapp.com/send?phone=966547534666",
       isDisabled: false,
@@ -80,6 +84,7 @@ const Header = () => {
             <Link
               href={navLink.link}
               target={navLink.isBlank ? "_blank" : "_self"}
+              {...getGtmTag(navLink.gtmTag, "navigation")}
               className={`px-4 py-3 text-lg font-medium leading-8 tracking-tight capitalize transition-all duration-200 ease-in-out border-b border-solid font-ibm hover:border-mainColor hover:text-mainColor ${
                 isActive
                   ? "border-mainColor text-mainColor"

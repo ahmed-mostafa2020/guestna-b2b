@@ -1,6 +1,7 @@
 import { GoogleTagManager as NextGTM } from "@next/third-parties/google";
 
-export default function GoogleTagManager({ gtmId }) {
+export default function GoogleTagManager({ gtmId, nonce }) {
   if (!gtmId) return null;
-  return <NextGTM gtmId={gtmId} />;
+  // nonce is required: the inline GTM bootstrap is blocked by the nonce-based CSP without it
+  return <NextGTM gtmId={gtmId} nonce={nonce} />;
 }

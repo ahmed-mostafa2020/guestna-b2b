@@ -8,6 +8,7 @@ import { memo } from "react";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import ImageWithPlaceholder from "@components/ui/imagesPlaceholder/ImageWithPlaceholder";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const FeatureTripCard = ({ featureTrip }) => {
   const t = useTranslations();
@@ -31,6 +32,7 @@ const FeatureTripCard = ({ featureTrip }) => {
         <Link
           target="_blank"
           href={CONSTANT_VALUES.WHATSAPP_CONTACT}
+          {...getGtmTag(GTM_TAGS.TRIPS.FEATURE_CONTACT, "trips")}
           className="px-4 py-3 text-sm text-white transition-all duration-200 ease-in-out rounded-lg lg:px-8 lg:text-base centered bg-mainColor hover:bg-linksHover"
         >
           {t("links.contactUs")}

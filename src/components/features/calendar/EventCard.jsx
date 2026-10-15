@@ -5,8 +5,12 @@ import { useTranslations, useLocale } from "next-intl";
 
 import { usePermissions } from "@hooks/utils/usePermissions";
 import formatDate from "@utils/formatters/FormateDate";
-import { getEventTypeLabel, getEventTypeColor } from "@utils/helpers/eventTypeUtils";
+import {
+  getEventTypeLabel,
+  getEventTypeColor,
+} from "@utils/helpers/eventTypeUtils";
 import { PERMISSIONS } from "@constants/permissions";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const EventCard = ({ event, onView, onEdit }) => {
   const { hasElement } = usePermissions();
@@ -52,6 +56,7 @@ const EventCard = ({ event, onView, onEdit }) => {
         <div className="flex gap-3 pt-2 border-t border-gray-100">
           <button
             onClick={() => onView(event)}
+            {...getGtmTag(GTM_TAGS.CALENDAR.VIEW_EVENT, "calendar", event._id)}
             className="flex-1 text-center py-2 text-black hover:text-mainColor text-sm font-medium border border-gray-200 rounded-lg hover:border-mainColor transition-colors"
           >
             {t("profile.calendar.actions.view")}
@@ -103,6 +108,7 @@ const EventCard = ({ event, onView, onEdit }) => {
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={() => onView(event)}
+            {...getGtmTag(GTM_TAGS.CALENDAR.VIEW_EVENT, "calendar", event._id)}
             className="text-black hover:text-mainColor text-sm font-medium transition-colors"
           >
             {t("profile.calendar.actions.view")}
@@ -130,4 +136,3 @@ export default memo(EventCard, (prevProps, nextProps) => {
     prevProps.event.happeningType === nextProps.event.happeningType
   );
 });
-

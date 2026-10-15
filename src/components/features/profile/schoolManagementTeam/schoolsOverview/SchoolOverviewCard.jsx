@@ -7,6 +7,7 @@ import Link from "next/link";
 import formatCurrency from "@utils/formatters/FormatCurrency";
 import { usePermissions } from "@hooks/utils/usePermissions";
 import { PERMISSIONS } from "@constants/permissions";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const SchoolOverviewCard = ({ item }) => {
   const t = useTranslations();
@@ -103,6 +104,7 @@ const SchoolOverviewCard = ({ item }) => {
         <Link
           className="!font-somar font-semibold !bg-mainColor px-8 py-4 block text-center w-full !text-white  rounded-lg"
           href={`/${locale}/profile/school-team-management/schools-details/${item.slug}`}
+          {...getGtmTag(GTM_TAGS.SCHOOLS.VIEW_DETAILS, "schools", item.slug)}
         >
           {t("profile.schools_overview.cards.show_details")}
         </Link>

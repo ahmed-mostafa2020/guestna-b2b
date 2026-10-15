@@ -24,6 +24,7 @@ import { Container } from "@mui/system";
 import { searchBarIcon } from "@assets/svg";
 
 import axios from "axios";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const SearchBar = () => {
   const { loading } = useSelector((state) => state.faqData);
@@ -122,6 +123,7 @@ const SearchBar = () => {
 
                 <button
                   type="submit"
+                  {...getGtmTag(GTM_TAGS.FAQ.SEARCH, "faq")}
                   disabled={
                     !isValid || isSubmitting || values.searchBar.length === 0
                   }

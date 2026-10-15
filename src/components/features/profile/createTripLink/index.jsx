@@ -12,6 +12,7 @@ import getErrorMessage from "@utils/helpers/getErrorMessage";
 import CustomizedModal from "@components/ui/customizedModal";
 import TripParticipationForm from "@components/forms/tripParticipationForm";
 import { isValidCoordinates } from "@utils/helpers/mapHelpers";
+import { ANALYTICS_EVENTS, trackEvent } from "@utils/tracking/analytics";
 import { useSnackbar } from "notistack";
 
 import { smallWhatsappIcon, posterIcon, copyIcon } from "@assets/svg";
@@ -52,7 +53,19 @@ const CreateTripLink = ({ data }) => {
 
   const tripLink = `${window.location.origin}/${locale}/parents/${tripData?.slug}`;
 
+  const trackLinkCreated = () =>
+    trackEvent(ANALYTICS_EVENTS.TRIP_LINK_CREATED, {
+      trip_id: tripData?.slug,
+    });
+
+  const trackShare = (method) =>
+    trackEvent(ANALYTICS_EVENTS.TRIP_LINK_SHARE, {
+      method,
+      trip_id: tripData?.slug,
+    });
+
   const handleWhatsAppShare = () => {
+    trackShare("whatsapp");
     const message = `${t("profile.createTripLink.booking.shareMessage")} ${
       tripData?.name
     }\n\n${tripLink}`;
@@ -61,6 +74,7 @@ const CreateTripLink = ({ data }) => {
   };
 
   const handleEmailShare = () => {
+    trackShare("email");
     const subject = `${t("profile.createTripLink.booking.emailSubject")} ${
       tripData?.name
     }`;
@@ -76,6 +90,7 @@ const CreateTripLink = ({ data }) => {
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(tripLink);
+      trackShare("copy_link");
       enqueueSnackbar(t("profile.createTripLink.modal.copySuccess"), {
         variant: "success",
       });
@@ -159,6 +174,7 @@ const CreateTripLink = ({ data }) => {
         });
 
         setTripStatus(TRIP_STATUS.PENDING);
+        trackLinkCreated();
 
         setShowLinkModal(true);
       }
@@ -177,6 +193,7 @@ const CreateTripLink = ({ data }) => {
   // generate/url succeeded — trip moves to pending and the link is ready
   const handleParticipationSuccess = () => {
     setTripStatus(TRIP_STATUS.PENDING);
+    trackLinkCreated();
     setShowParticipationModal(false);
     setShowLinkModal(true);
   };
@@ -320,7 +337,8 @@ const CreateTripLink = ({ data }) => {
             </h2>
 
             <p className=" ">
-              {t("profile.createTripLink.modal.subtitle")} "{tripData?.name}"
+              {t("profile.createTripLink.modal.subtitle")} &quot;
+              {tripData?.name}&quot;
             </p>
 
             <div className="bg-gray-50 rounded-lg p-4 border-2 border-dashed border-gray-300">

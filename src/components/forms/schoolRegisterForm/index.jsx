@@ -22,6 +22,8 @@ import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { Close } from "@mui/icons-material";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
+import { ANALYTICS_EVENTS, trackEvent } from "@utils/tracking/analytics";
 
 const SchoolRegisterForm = ({
   cities = [],
@@ -214,6 +216,7 @@ const SchoolRegisterForm = ({
       });
 
       if (response.status === 200 || response.status === 201) {
+        trackEvent(ANALYTICS_EVENTS.SIGN_UP, { method: "school_register" });
         enqueueSnackbar(t("schoolRegister.form.success"), {
           variant: "success",
         });
@@ -598,7 +601,9 @@ const SchoolRegisterForm = ({
                     <div className="flex items-center gap-0.5">
                       <label
                         className="font-medium capitalize font-somar"
-                        style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                        style={{
+                          fontFamily: "var(--font-somar-sans), sans-serif",
+                        }}
                       >
                         {t("schoolRegister.form.organizationPhone.label")}
                       </label>
@@ -713,9 +718,7 @@ const SchoolRegisterForm = ({
                       }}
                       touched={touched.stages}
                       errors={errors.stages}
-                      placeholder={t(
-                        "schoolRegister.form.stages.placeholder"
-                      )}
+                      placeholder={t("schoolRegister.form.stages.placeholder")}
                       list={stageNames}
                       multiple={true}
                       label={t("schoolRegister.form.stages.label")}
@@ -728,7 +731,9 @@ const SchoolRegisterForm = ({
                       <div className="relative w-full min-w-0 flex flex-col gap-2">
                         <label
                           className="font-medium capitalize font-somar"
-                          style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                          style={{
+                            fontFamily: "var(--font-somar-sans), sans-serif",
+                          }}
                         >
                           {t("schoolRegister.form.grades.label")}
                           <span className="text-error ml-1">*</span>
@@ -741,7 +746,9 @@ const SchoolRegisterForm = ({
                       <div className="relative w-full min-w-0 flex flex-col gap-2">
                         <label
                           className="font-medium capitalize font-somar"
-                          style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                          style={{
+                            fontFamily: "var(--font-somar-sans), sans-serif",
+                          }}
                         >
                           {t("schoolRegister.form.grades.label")}
                           <span className="text-error ml-1">*</span>
@@ -832,7 +839,9 @@ const SchoolRegisterForm = ({
                     <div className="flex items-center gap-0.5">
                       <label
                         className="font-medium capitalize font-somar"
-                        style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                        style={{
+                          fontFamily: "var(--font-somar-sans), sans-serif",
+                        }}
                       >
                         {t("schoolRegister.form.phone.label")}
                       </label>
@@ -889,6 +898,7 @@ const SchoolRegisterForm = ({
                   {/* Submit Button */}
                   <button
                     type="submit"
+                    {...getGtmTag(GTM_TAGS.SCHOOLS.REGISTER_SUBMIT, "schools")}
                     disabled={isSubmitting || !isValid}
                     className="lg:flex-1 w-full centered font-semibold text-center border-2 border-mainColor py-3 bg-mainColor text-white rounded-lg hover:bg-linksHover hover:border-linksHover transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
@@ -975,7 +985,9 @@ const SchoolRegisterForm = ({
                             )}
                             list={roleNames}
                             multiple={false}
-                            label={t("schoolRegister.form.functionalDegree.label")}
+                            label={t(
+                              "schoolRegister.form.functionalDegree.label"
+                            )}
                             labelClassName="font-somar"
                             labelFontFamily="var(--font-somar-sans), sans-serif"
                             required={true}
@@ -1002,7 +1014,10 @@ const SchoolRegisterForm = ({
                             <div className="flex items-center gap-0.5">
                               <label
                                 className="font-medium capitalize font-somar"
-                                style={{ fontFamily: "var(--font-somar-sans), sans-serif" }}
+                                style={{
+                                  fontFamily:
+                                    "var(--font-somar-sans), sans-serif",
+                                }}
                               >
                                 {t("schoolRegister.form.phone.label")}
                               </label>

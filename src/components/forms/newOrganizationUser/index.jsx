@@ -27,6 +27,7 @@ import axios from "axios";
 import PhoneInputWithCountrySelect from "@components/forms/PhoneNumberInput";
 import "react-phone-number-input/style.css";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const OrganizationUserForm = ({
   user,
@@ -261,6 +262,7 @@ const OrganizationUserForm = ({
               </div>
 
               <FormSubmitButton
+                {...getGtmTag(GTM_TAGS.USERS.ADD_USER, "users")}
                 loading={isSubmitting}
                 disabled={!isValid}
                 label={t("links.sendRequest")}

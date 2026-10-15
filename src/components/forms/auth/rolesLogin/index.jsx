@@ -51,6 +51,8 @@ import { useSnackbar } from "notistack";
 import axios from "axios";
 
 import hello from "@assets/gif/hello.gif";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
+import { ANALYTICS_EVENTS, trackEvent } from "@utils/tracking/analytics";
 
 const RolesLoginForm = () => {
   // const confirmTermsAndConditions = useSelector(
@@ -107,6 +109,11 @@ const RolesLoginForm = () => {
           dispatch(setUserToken(response.data.token));
           dispatch(setUser(response.data.userType));
           dispatch(setPermissions(response.data.user.permissions));
+
+          trackEvent(ANALYTICS_EVENTS.LOGIN, {
+            method: "staff_password",
+            user_type: response.data.userType,
+          });
 
           const providerSlug =
             response.data.user?.providerSlug || response.data.providerSlug;
@@ -291,6 +298,7 @@ const RolesLoginForm = () => {
                 <div className="flex justify-end items-center">
                   <Link
                     href={`/${locale}/forget-password`}
+                    {...getGtmTag(GTM_TAGS.AUTH.FORGOT_PASSWORD, "auth")}
                     className="text-sm transition-all duration-200 ease-in-out border-b text-titleColor font-ibm border-titleColor hover:border-linksHover hover:text-linksHover w-fit"
                   >
                     {t("forms.auth.forgetPassword.name")}
@@ -298,6 +306,7 @@ const RolesLoginForm = () => {
                 </div>
 
                 <FormSubmitButton
+                  {...getGtmTag(GTM_TAGS.AUTH.STAFF_LOGIN_SUBMIT, "auth")}
                   loading={isSubmitting}
                   disabled={!isValid}
                   label={t("forms.auth.login.name")}

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { CircularProgress } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import TextInputGroup from "../TextInputGroup";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const RejectOrderForm = ({
   orderId,
@@ -156,6 +157,7 @@ const RejectOrderForm = ({
             <button
               type="button"
               onClick={handleCancel}
+              {...getGtmTag(GTM_TAGS.ORDERS.REJECT_CANCEL, "orders")}
               disabled={rejectingOrder}
               className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors cursor-pointer text-textLight hover:text-textDark shrink-0 disabled:opacity-50"
               aria-label={t2("links.cancel")}
@@ -243,6 +245,7 @@ const RejectOrderForm = ({
             <button
               type="button"
               onClick={handleCancel}
+              {...getGtmTag(GTM_TAGS.ORDERS.REJECT_CANCEL, "orders")}
               disabled={rejectingOrder}
               className="w-full sm:w-1/2 px-6 h-12 flex items-center justify-center rounded-xl border-2 border-border text-textDark font-bold text-sm sm:text-base hover:border-mainColor hover:text-mainColor active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-white font-somar"
             >
@@ -253,6 +256,7 @@ const RejectOrderForm = ({
             <button
               type="button"
               onClick={handleSubmit}
+              {...getGtmTag(GTM_TAGS.ORDERS.REJECT, "orders")}
               disabled={rejectingOrder || !selectedReason}
               className="w-full sm:w-1/2 px-6 h-12 flex items-center justify-center border-2 border-transparent bg-error text-white rounded-xl font-bold text-sm sm:text-base hover:bg-red-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shadow-xs focus:outline-none focus:ring-2 focus:ring-error/30 font-somar"
             >

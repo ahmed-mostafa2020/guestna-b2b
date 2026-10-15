@@ -8,6 +8,11 @@ import { useEffect } from "react";
 
 import { B2B_END_POINTS } from "@constants/b2bAPIs";
 import { useFetchData } from "@hooks/data/useFetchData";
+import {
+  ANALYTICS_EVENTS,
+  takeCheckoutValue,
+  trackEvent,
+} from "@utils/tracking/analytics";
 
 import ErrorComponent from "@feedback/error/ErrorComponent";
 import FullScreenLoading from "@feedback/loading/FullScreenLoading";
@@ -36,6 +41,27 @@ const BookingStatus = ({ params }) => {
       "pagesHead.title.bookingStatus"
     )}`;
   }, [t]);
+
+  // Every payment method lands here; GA4 de-duplicates purchase by transaction_id on refresh
+  useEffect(() => {
+    if (!data) return;
+    const transactionId =
+      data.bookingInfo?.orderId || data.bookingId || params.bookingId;
+    if (data.isBooking) {
+      // Total saved on the checkout page (VAT incl., after discounts); missing for event flows
+      const value = takeCheckoutValue();
+      trackEvent(ANALYTICS_EVENTS.PURCHASE, {
+        transaction_id: transactionId,
+        payment_type: data.bookingInfo?.paymentType || data.paymentMethod,
+        value,
+        currency: value ? "SAR" : undefined,
+      });
+    } else {
+      trackEvent(ANALYTICS_EVENTS.PAYMENT_FAILED, {
+        transaction_id: transactionId,
+      });
+    }
+  }, [data, params.bookingId]);
 
   if (isLoading)
     return (

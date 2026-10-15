@@ -20,6 +20,7 @@ import getProxyUrl from "@utils/api/getProxyUrl";
 import axios from "axios";
 
 import { CircularProgress } from "@mui/material";
+import { getGtmTag, GTM_TAGS } from "@utils/tracking/gtmUtils";
 
 const PromoCodeForm = () => {
   const [promoValue, setPromoValue] = useState("");
@@ -30,9 +31,8 @@ const PromoCodeForm = () => {
     client,
     quantity,
     _id: tripId,
-    duration
+    duration,
   } = useSelector((state) => state.finalTripDetailsData.data);
-
 
   const locale = useLocale();
   const t = useTranslations();
@@ -62,7 +62,7 @@ const PromoCodeForm = () => {
         trip: tripId,
         client,
         quantity,
-        duration
+        duration,
       },
     };
 
@@ -167,6 +167,7 @@ const PromoCodeForm = () => {
           <button
             type="button"
             disabled={!promoValue || isSubmitting}
+            {...getGtmTag(GTM_TAGS.PAYMENT.APPLY_COUPON, "payment")}
             onClick={handleSubmit}
             className="shrink-0 centered h-[44px] sm:h-[52px] border border-[#E3EBF5] bg-[#E3EBF5] text-textDark rounded-lg px-3.5 sm:px-8 text-xs sm:text-base font-semibold font-somar transition-all duration-200 ease-in-out disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap hover:bg-[#d8e3f0]"
           >
@@ -179,7 +180,9 @@ const PromoCodeForm = () => {
               </div>
             ) : (
               <>
-                <span className="sm:hidden font-somar">{t("forms.promoCode.apply")}</span>
+                <span className="sm:hidden font-somar">
+                  {t("forms.promoCode.apply")}
+                </span>
                 <span className="hidden sm:inline font-somar">
                   {t("forms.promoCode.useCode")}
                 </span>
