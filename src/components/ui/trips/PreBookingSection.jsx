@@ -218,7 +218,7 @@ const PreBookingSection = ({ tripData }) => {
             </span>
             <span className="text-3xl font-thin text-textLight">/</span>
             <span className="text-xl font-normal text-textLight">
-              {t("common.onePerson")}
+              {t("common.onePersonOnly")}
             </span>
             <span className="text-xs text-textDark ">{`(${t("finalDetails.includingVAT")})`}</span>
           </h3>
@@ -269,7 +269,7 @@ const PreBookingSection = ({ tripData }) => {
         }`}
       >
         {/* Subtle patterned header accent matching FrameWithImagedHeader */}
-        <div className="h-12 w-full overflow-hidden bg-[#E2E6EE] relative">
+        <div className="h-6 w-full overflow-hidden bg-[#E2E6EE] relative">
           <Image
             src={preBookingSection}
             alt=""
@@ -288,7 +288,7 @@ const PreBookingSection = ({ tripData }) => {
                 {defaultPriceWithFormatting}
               </span>
               <span className="text-xs sm:text-sm font-light text-textLight">
-                / {t("common.onePerson")}
+                / {t("common.onePersonOnly")}
               </span>
             </div>
             <span className="text-[10px] sm:text-xs text-textLight font-normal">

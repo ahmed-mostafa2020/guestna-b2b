@@ -9,6 +9,7 @@ import { PERMISSIONS } from "@constants/permissions";
 import { getHeaders } from "@utils/helpers/getHeaders";
 import getProxyUrl from "@utils/api/getProxyUrl";
 import FrameWithImagedHeader from "@components/ui/frameWithImagedHeader/FrameWithImagedHeader";
+import MobileStickyActionBar from "@components/ui/trips/MobileStickyActionBar";
 import CustomizedModal from "@components/ui/customizedModal";
 import AuthenticatedRequestQuote from "@components/forms/requestQuote/AuthenticatedRequestQuote";
 import MarketTemplateRegisterCta from "@components/features/tripDetails/requestQuote/MarketTemplateRegisterCta";
@@ -113,13 +114,15 @@ const AuthanticatedRequestQuoteBox = ({ tripId, isMarketTemplate = false }) => {
     }
   };
 
+  const canCreateTrip = hasElement(
+    PERMISSIONS.ELEMENT.B2B_PROFIEL_ORDER_MANAGEMENT_CREATE_NEWTRIP
+  );
+
   return (
     <>
-      <FrameWithImagedHeader withBorder={true}>
+      <FrameWithImagedHeader withBorder={true} className="hidden lg:block">
         <div className="grid grid-cols-2 gap-2">
-          {hasElement(
-            PERMISSIONS.ELEMENT.B2B_PROFIEL_ORDER_MANAGEMENT_CREATE_NEWTRIP
-          ) && (
+          {canCreateTrip && (
             <button
               disabled={loading}
               onClick={showUpdateTripForm}
@@ -144,6 +147,37 @@ const AuthanticatedRequestQuoteBox = ({ tripId, isMarketTemplate = false }) => {
 
         {isMarketTemplate && <MarketTemplateRegisterCta tripId={tripId} />}
       </FrameWithImagedHeader>
+
+      {/* Mobile sticky bar */}
+      <MobileStickyActionBar>
+        <div className="grid grid-cols-2 gap-2">
+          {canCreateTrip && (
+            <button
+              disabled={loading}
+              onClick={showUpdateTripForm}
+              className="disabled:opacity-50 disabled:cursor-not-allowed centered w-full py-2.5 px-4 text-sm text-white font-medium rounded-lg bg-mainColor hover:bg-mainColor/80 transition-all duration-200 ease-in-out active:scale-95"
+            >
+              {loading ? (
+                <CircularProgress size={20} color="white" />
+              ) : (
+                t("links.requestQuote")
+              )}
+            </button>
+          )}
+
+          <Link
+            target="_blank"
+            href={CONSTANT_VALUES.WHATSAPP_CONTACT}
+            className="py-2.5 text-sm font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-secColor text-mainColor hover:text-white hover:bg-secColor"
+          >
+            {t("links.contactUs")}
+          </Link>
+        </div>
+
+        {isMarketTemplate && (
+          <MarketTemplateRegisterCta tripId={tripId} compact />
+        )}
+      </MobileStickyActionBar>
 
       {/* edit trip modal */}
       {openEditModal && (

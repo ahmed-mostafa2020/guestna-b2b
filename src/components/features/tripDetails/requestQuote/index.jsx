@@ -10,6 +10,7 @@ import { useState } from "react";
 import { CONSTANT_VALUES } from "@constants/constantValues";
 
 import FrameWithImagedHeader from "@components/ui/frameWithImagedHeader/FrameWithImagedHeader";
+import MobileStickyActionBar from "@components/ui/trips/MobileStickyActionBar";
 import CustomizedModal from "@components/ui/customizedModal";
 import RequestQuoteForm from "@components/forms/requestQuote";
 import MarketTemplateRegisterCta from "./MarketTemplateRegisterCta";
@@ -39,7 +40,7 @@ const RequestQuote = () => {
 
   return (
     <>
-      <FrameWithImagedHeader withBorder={true}>
+      <FrameWithImagedHeader withBorder={true} className="hidden lg:block">
         <div className="flex items-center justify-between gap-2">
           {!onlyDetails && (
             <button
@@ -61,6 +62,32 @@ const RequestQuote = () => {
 
         {isMarketTemplate && <MarketTemplateRegisterCta tripId={tripId} />}
       </FrameWithImagedHeader>
+
+      {/* Mobile sticky bar */}
+      <MobileStickyActionBar>
+        <div className="flex items-center gap-2">
+          {!onlyDetails && (
+            <button
+              onClick={handleRequestQuoteFormOpen}
+              className="flex-1 py-2.5 text-sm font-semibold text-center text-white transition-all duration-200 ease-in-out border-2 rounded-lg border-mainColor hover:bg-linksHover hover:border-linksHover bg-mainColor active:scale-95"
+            >
+              {t("links.requestQuote")}
+            </button>
+          )}
+
+          <Link
+            target="_blank"
+            href={CONSTANT_VALUES.WHATSAPP_CONTACT}
+            className="flex-1 py-2.5 text-sm font-semibold text-center transition-all duration-200 ease-in-out bg-white border-2 rounded-lg border-secColor text-mainColor hover:text-white hover:bg-secColor"
+          >
+            {t("links.contactUs")}
+          </Link>
+        </div>
+
+        {isMarketTemplate && (
+          <MarketTemplateRegisterCta tripId={tripId} compact />
+        )}
+      </MobileStickyActionBar>
 
       {/* Parent login form */}
       {isRequestQuoteFormOpen && (

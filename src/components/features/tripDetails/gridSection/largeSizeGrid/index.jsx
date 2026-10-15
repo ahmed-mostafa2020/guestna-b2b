@@ -1,6 +1,5 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 
 // import { USERS } from "@constants/users";
@@ -15,8 +14,6 @@ const LargeSizeSection = () => {
 
   const isAuth = data?.isAuth ?? true;
 
-  const pathname = usePathname();
-
   return (
     <div className="flex flex-col gap-5">
       {/* {data?.trip?.loversCount >= 0 && (
@@ -25,7 +22,7 @@ const LargeSizeSection = () => {
           reviewsCount={data?.reviewsCount || 20}
         />
       )} */}
-      {isAuth && pathname?.includes("/parents/") && (
+      {isAuth && (
         <TripTagsListing data={data} />
       )}
       {Boolean(data?.isIntegrations) && <InstantConfirmationBanner />}

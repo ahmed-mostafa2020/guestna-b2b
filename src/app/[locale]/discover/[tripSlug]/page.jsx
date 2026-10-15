@@ -143,7 +143,7 @@ const TripDetails = ({ params }) => {
 
   return (
     <main
-      className={`py-5 overflow-hidden ${
+      className={`pt-5 pb-40 overflow-hidden ${
         data?.tripsType === CONSTANT_VALUES.PACKAGE
           ? "bg-packageDetailsBg"
           : "bg-activityDetailsBg"

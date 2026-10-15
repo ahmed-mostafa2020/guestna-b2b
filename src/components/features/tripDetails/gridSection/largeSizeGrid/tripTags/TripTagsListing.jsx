@@ -55,7 +55,7 @@ const TripTagsListing = ({ data }) => {
       : null;
 
   // Day date
-  const day = data?.day;
+  const day = data?.day ?? data?.fromDay;
   const tripDay = formatDate(day, locale, {
     weekday: "long",
     year: "numeric",
