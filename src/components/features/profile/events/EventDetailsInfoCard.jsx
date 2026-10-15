@@ -27,6 +27,7 @@ const EventDetailsInfoCard = ({
   const t = useTranslations("profile.events.details");
   const tCommon = useTranslations("common");
   const tEvents = useTranslations("profile.events");
+  const tRoot = useTranslations();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleCopyLink = async () => {
@@ -180,7 +181,7 @@ const EventDetailsInfoCard = ({
             rel="noopener noreferrer"
             className="flex items-center justify-center h-12 px-4 rounded-xl border-2 border-mainColor text-mainColor hover:text-white hover:bg-mainColor font-bold font-somar transition-all duration-200 text-center shadow-sm text-sm"
           >
-            {useTranslations()("eventTrips.viewInvitation") || "Event Invitation"}
+            {tRoot("eventTrips.viewInvitation") || "Event Invitation"}
           </a>
           <button
             onClick={handleCopyLink}

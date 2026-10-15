@@ -51,10 +51,6 @@ const ReportTable = ({
     setSelectedBooking(null);
   };
 
-  if (!data || !data.nodes) {
-    return <TableSkeleton columns={hasAnyReportPermission ? 5 : 4} />;
-  }
-
   const columns = useMemo(
     () => [
       {
@@ -100,6 +96,11 @@ const ReportTable = ({
     ],
     [t, locale]
   );
+
+  // Kept after all hooks so the hook order is the same on every render
+  if (!data || !data.nodes) {
+    return <TableSkeleton columns={hasAnyReportPermission ? 5 : 4} />;
+  }
 
   return (
     <>
