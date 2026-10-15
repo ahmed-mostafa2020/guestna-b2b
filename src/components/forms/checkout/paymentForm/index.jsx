@@ -69,13 +69,24 @@ const PaymentForm = () => {
   const [showCounter, setShowCounter] = useState(true);
 
   //  For Apple pay
-  const [canMakePayments, setCanMakePayments] = useState(true);
+  const [canMakePayments, setCanMakePayments] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.ApplePaySession) {
-      ApplePaySession.canMakePayments();
-      setCanMakePayments(true);
+    let supported = false;
+    try {
+      supported =
+        typeof window !== "undefined" &&
+        !!window.ApplePaySession &&
+        !!window.ApplePaySession.canMakePayments();
+    } catch {
+      supported = false;
     }
+    setCanMakePayments(supported);
+    // Apple Pay is the default method — fall back to card when it's hidden
+    if (!supported) {
+      setCurrentPaymentMethod(CONSTANT_VALUES.PAYMENT_METHODS.CREDIT_CARD);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const router = useRouter();
