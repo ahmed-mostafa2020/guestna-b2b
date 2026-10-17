@@ -7,9 +7,8 @@ import Skeleton from "@mui/material/Skeleton";
 
 const DocumentsQualificationStats = () => {
   const t = useTranslations("providerProfile.onboarding.qualification");
-  const { data: status, loading } = useSelector(
-    (state) => state.onboardingStatus
-  );
+  const { data: status, loading } =
+    useSelector((state) => state.onboardingStatus) || {};
   const isLoading = loading === "loading";
   const progress = status?.qualificationProgress;
 

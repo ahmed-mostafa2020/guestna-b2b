@@ -102,7 +102,7 @@ const ContractsTable = () => {
     data,
     page: currentPage,
     loading,
-  } = useSelector((state) => state.onboardingContracts);
+  } = useSelector((state) => state.onboardingContracts) || {};
 
   const contractsData = data || {};
   const isLoading = loading === "loading";

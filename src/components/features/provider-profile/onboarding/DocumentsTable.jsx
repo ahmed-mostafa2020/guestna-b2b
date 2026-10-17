@@ -13,6 +13,8 @@ import { CONSTANT_VALUES } from "@constants/constantValues";
 import { ONBOARDING_DOCUMENT_TYPES } from "@constants/onboardingDocumentTypes";
 import { setOnboardingDocumentsPage } from "@store/providerOnboarding/onboardingDocumentsSlice";
 
+const EMPTY_UPLOAD_OPTIONS = [];
+
 const isRequiredDocument = (documentType) =>
   documentType !== ONBOARDING_DOCUMENT_TYPES.OTHER;
 
@@ -115,13 +117,13 @@ const DocumentsTable = ({ onUpload }) => {
     data,
     page: currentPage,
     loading,
-  } = useSelector((state) => state.onboardingDocuments);
-  const { options: uploadOptions, loading: uploadSelectLoading } = useSelector(
-    (state) => state.onboardingUploadSelect
-  );
+  } = useSelector((state) => state.onboardingDocuments) || {};
+  const { options: uploadOptions, loading: uploadSelectLoading } =
+    useSelector((state) => state.onboardingUploadSelect) || {};
+  const resolvedUploadOptions = uploadOptions || EMPTY_UPLOAD_OPTIONS;
   const canUploadNew =
     uploadSelectLoading === "succeeded" &&
-    uploadOptions.some((option) => option?.documentType);
+    resolvedUploadOptions.some((option) => option?.documentType);
 
   const documentsData = data || {};
   const isLoading = loading === "loading";

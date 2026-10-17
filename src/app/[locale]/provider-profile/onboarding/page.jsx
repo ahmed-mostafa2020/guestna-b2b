@@ -38,6 +38,7 @@ import ContractsTable from "@components/features/provider-profile/onboarding/Con
 import DocumentUploadModal from "@components/features/provider-profile/onboarding/DocumentUploadModal";
 
 const EMPTY_PARAMS = {};
+const EMPTY_UPLOAD_OPTIONS = [];
 
 const ProviderOnboardingPage = () => {
   const t = useTranslations();
@@ -46,10 +47,14 @@ const ProviderOnboardingPage = () => {
 
   const token = Cookies.get(CONSTANT_VALUES.AUTH_TOKEN);
   const userType = useSelector((state) => state.users?.userType);
-  const documentsPage = useSelector((state) => state.onboardingDocuments.page);
-  const contractsPage = useSelector((state) => state.onboardingContracts.page);
+  const documentsPage = useSelector(
+    (state) => state.onboardingDocuments?.page ?? 1
+  );
+  const contractsPage = useSelector(
+    (state) => state.onboardingContracts?.page ?? 1
+  );
   const uploadOptions = useSelector(
-    (state) => state.onboardingUploadSelect.options
+    (state) => state.onboardingUploadSelect?.options ?? EMPTY_UPLOAD_OPTIONS
   );
   const isAuthenticated =
     Boolean(token) &&
@@ -81,7 +86,7 @@ const ProviderOnboardingPage = () => {
     [contractsPage]
   );
 
-  const sharedQueryOptions = useMemo(
+  const statusQueryOptions = useMemo(
     () => ({
       lang: locale,
       enabled: isAuthenticated,
@@ -90,6 +95,57 @@ const ProviderOnboardingPage = () => {
       cacheTime: 0,
       refetchOnMount: "always",
       queryKeySuffix: locale,
+      onSuccess: setOnboardingStatus,
+      onError: setOnboardingStatusError,
+      onLoading: setOnboardingStatusLoading,
+    }),
+    [locale, isAuthenticated]
+  );
+
+  const documentsQueryOptions = useMemo(
+    () => ({
+      lang: locale,
+      enabled: isAuthenticated,
+      staleTime: 0,
+      gcTime: 0,
+      cacheTime: 0,
+      refetchOnMount: "always",
+      queryKeySuffix: locale,
+      onSuccess: setOnboardingDocuments,
+      onError: setOnboardingDocumentsError,
+      onLoading: setOnboardingDocumentsLoading,
+    }),
+    [locale, isAuthenticated]
+  );
+
+  const uploadSelectQueryOptions = useMemo(
+    () => ({
+      lang: locale,
+      enabled: isAuthenticated,
+      staleTime: 0,
+      gcTime: 0,
+      cacheTime: 0,
+      refetchOnMount: "always",
+      queryKeySuffix: locale,
+      onSuccess: setOnboardingUploadSelect,
+      onError: setOnboardingUploadSelectError,
+      onLoading: setOnboardingUploadSelectLoading,
+    }),
+    [locale, isAuthenticated]
+  );
+
+  const contractsQueryOptions = useMemo(
+    () => ({
+      lang: locale,
+      enabled: isAuthenticated,
+      staleTime: 0,
+      gcTime: 0,
+      cacheTime: 0,
+      refetchOnMount: "always",
+      queryKeySuffix: locale,
+      onSuccess: setOnboardingContracts,
+      onError: setOnboardingContractsError,
+      onLoading: setOnboardingContractsLoading,
     }),
     [locale, isAuthenticated]
   );
@@ -97,45 +153,25 @@ const ProviderOnboardingPage = () => {
   const { refetch: refetchStatus } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.STATUS,
     EMPTY_PARAMS,
-    {
-      ...sharedQueryOptions,
-      onSuccess: setOnboardingStatus,
-      onError: setOnboardingStatusError,
-      onLoading: setOnboardingStatusLoading,
-    }
+    statusQueryOptions
   );
 
   const { refetch: refetchDocuments } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.DOCUMENTS,
     documentsParams,
-    {
-      ...sharedQueryOptions,
-      onSuccess: setOnboardingDocuments,
-      onError: setOnboardingDocumentsError,
-      onLoading: setOnboardingDocumentsLoading,
-    }
+    documentsQueryOptions
   );
 
   const { refetch: refetchUploadSelect } = useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.DOCUMENTS_UPLOAD_SELECT,
     EMPTY_PARAMS,
-    {
-      ...sharedQueryOptions,
-      onSuccess: setOnboardingUploadSelect,
-      onError: setOnboardingUploadSelectError,
-      onLoading: setOnboardingUploadSelectLoading,
-    }
+    uploadSelectQueryOptions
   );
 
   useFetchData(
     B2B_END_POINTS.PROVIDER_PROFILE.ONBOARDING.CONTRACTS,
     contractsParams,
-    {
-      ...sharedQueryOptions,
-      onSuccess: setOnboardingContracts,
-      onError: setOnboardingContractsError,
-      onLoading: setOnboardingContractsLoading,
-    }
+    contractsQueryOptions
   );
 
   const handleOpenUpload = useCallback(

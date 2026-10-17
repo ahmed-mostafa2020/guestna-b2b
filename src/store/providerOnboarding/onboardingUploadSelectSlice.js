@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const EMPTY_OPTIONS = [];
+
 const initialState = {
-  options: [],
+  options: EMPTY_OPTIONS,
   loading: "idle",
   error: null,
 };
@@ -11,8 +13,8 @@ export const onboardingUploadSelectSlice = createSlice({
   initialState,
   reducers: {
     setOnboardingUploadSelect: (state, action) => {
-      const payload = action.payload?.data ?? action.payload ?? [];
-      state.options = Array.isArray(payload) ? payload : [];
+      const payload = action.payload?.data ?? action.payload;
+      state.options = Array.isArray(payload) ? payload : EMPTY_OPTIONS;
       state.loading = "succeeded";
       state.error = null;
     },
