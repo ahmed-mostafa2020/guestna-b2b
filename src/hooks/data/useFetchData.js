@@ -127,10 +127,18 @@ export const useFetchData = (endpoint, params = {}, options = {}) => {
       dispatch(options.onError(query.error));
     }
 
-    if (options.onLoading && query.isLoading) {
+    // isLoading is only true on the first load; pagination/refetch uses isFetching
+    if (options.onLoading && (query.isLoading || query.isFetching)) {
       dispatch(options.onLoading());
     }
-  }, [query.data, query.error, query.isLoading, dispatch, options]);
+  }, [
+    query.data,
+    query.error,
+    query.isLoading,
+    query.isFetching,
+    dispatch,
+    options,
+  ]);
 
   return query;
 };

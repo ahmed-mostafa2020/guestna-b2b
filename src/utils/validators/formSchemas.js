@@ -2,6 +2,10 @@ import * as Yup from "yup";
 
 import { CONSTANT_VALUES } from "@constants/constantValues";
 import { createPhoneValidation, emailRegex } from "./authSchemas";
+import {
+  ARABIC_LOCALIZED_TEXT_REGEX,
+  ENGLISH_LOCALIZED_TEXT_REGEX,
+} from "./localizedTextPatterns";
 import { isValidPhoneByPattern } from "../phonePatterns";
 
 // Search
@@ -380,13 +384,13 @@ export const createCustomNewTripSchema = (t) =>
         en: Yup.string()
           .required(t("forms.validation.require"))
           .matches(
-            /^[a-zA-Z0-9\s.,!?'-]+$/,
+            ENGLISH_LOCALIZED_TEXT_REGEX,
             t("forms.customTrip.steps.trip_info.fields.name.en.error")
           ),
         ar: Yup.string()
           .required(t("forms.validation.require"))
           .matches(
-            /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+            ARABIC_LOCALIZED_TEXT_REGEX,
             t("forms.customTrip.steps.trip_info.fields.name.ar.error")
           ),
       })
@@ -514,7 +518,7 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
           : Yup.string()
               .required(t("forms.validation.require"))
               .matches(
-                /^[a-zA-Z0-9\s.,!?'-]+$/,
+                ENGLISH_LOCALIZED_TEXT_REGEX,
                 t("forms.customTrip.steps.trip_info.fields.name.en.error")
               ),
         ar: isNormalTrip
@@ -522,7 +526,7 @@ export const editCustomTripSchema = (t, isNormalTrip = false) =>
           : Yup.string()
               .required(t("forms.validation.require"))
               .matches(
-                /^[\u0600-\u06FF0-9\s.,!?'-]+$/,
+                ARABIC_LOCALIZED_TEXT_REGEX,
                 t("forms.customTrip.steps.trip_info.fields.name.ar.error")
               ),
       })
